@@ -1,13 +1,20 @@
 package org.example;
-
-import java.util.ArrayList;
-
+//
 class Movie extends TVShow {
-    /*
-     *Movie is extended from TVShow and has extra attribute length.
-     */
-    public Movie()
-    {
-        super();
+
+    int length; // in minutes
+//----------------------------------------------------------------------------------------------------------------------
+// class constructor
+    public Movie(){
+        duration = 1;
     }
+//----------------------------------------------------------------------------------------------------------------------
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
 }
