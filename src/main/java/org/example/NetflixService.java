@@ -1,8 +1,8 @@
 package org.example;
+import javax.swing.plaf.PanelUI;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.Scanner;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 //
 class NetflixService {
 //----------------------------------------------------------------------------------------------------------------------
@@ -133,7 +132,6 @@ class NetflixService {
                 switch (sw){
                     case 1: // tile
                         if (title.toLowerCase().equals(key)){
-                            System.out.println("\n----------------------------------------");
                             System.out.println("Title: " + title);
                             System.out.println("Genre: " + genre);
                             System.out.println("Release year: " + year);
@@ -143,7 +141,6 @@ class NetflixService {
                         break;
                     case 2: // genre
                         if (genre.toLowerCase().equals(key)){
-                            System.out.println("\n----------------------------------------");
                             System.out.println("Title: " + title);
                             System.out.println("Genre: " + genre);
                             System.out.println("Release year: " + year);
@@ -153,7 +150,6 @@ class NetflixService {
                         break;
                     case 3: // release year
                         if (year.equals(key)){
-                            System.out.println("\n----------------------------------------");
                             System.out.println("Title: " + title);
                             System.out.println("Genre: " + genre);
                             System.out.println("Release year: " + year);
@@ -210,7 +206,7 @@ class NetflixService {
 //----------------------------------------------------------------------------------------------------------------------
     public static void createFile(){
         String fileName1 = "userPassword.txt";
-        String fileName2 = "seenFave.txt";
+        String fileName2 = "watchedFave.txt";
         String fileName3 = "inventory.txt";
 
         File file1 = new File(fileName1);
@@ -248,7 +244,7 @@ class NetflixService {
             adminMenu();
         }
         else {
-            String filePath = "/Users/shayanshahrabi/Documents/University/Semester2/AP/AP-homework/Assignment4/Fourth-Assignment-Netflix/userPassword.txt"; // the path to the file you want to search in
+            String filePath = "userPassword.txt"; // the path to the file you want to search in
             Path path = Paths.get(filePath);
             List<String> lines = null; // read all lines of the file into a list
             try {
@@ -264,7 +260,7 @@ class NetflixService {
 
             if (found && (username != "") && (password != "")) {
                 System.out.println("\nYou have successfully loegged in.\n");
-                userMenu();
+                userMenu(username);
             } else {
                 System.out.println("\nWrong user or password!\n");
                 login();
@@ -272,15 +268,17 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void userMenu(){
+    public static void userMenu(String username){
         Scanner input = new Scanner(System.in);
         int menuItem;
         do {
             System.out.println("1: Search on title");
             System.out.println("2: Search on genre");
             System.out.println("3: Search on release year");
-            System.out.println("4: My Favorites");
-            System.out.println("5: Seen");
+            System.out.println("4: Add to Favorites");
+            System.out.println("5: My Favorites");
+            System.out.println("6: Add to Watched");
+            System.out.println("7: My Watched");
             System.out.println("0: Log out");
 
             menuItem = input.nextInt();
@@ -295,8 +293,17 @@ class NetflixService {
                 case 2:
                     search(2);
                     break;
-                case 3:
-                    search(3);
+                case 4:
+                    add2FaveOrWathced(username, 1);
+                    break;
+                case 5:
+                    showFaveOrWatched(username, 1);
+                    break;
+                case 6:
+                    add2FaveOrWathced(username, 2);
+                    break;
+                case 7:
+                    showFaveOrWatched(username, 2);
                     break;
             }
         }while(true);
@@ -381,6 +388,81 @@ class NetflixService {
             }
         }
     }
+//----------------------------------------------------------------------------------------------------------------------
+    public static void add2FaveOrWathced(String username, int sw){ //1: fave    2: watch
+        Scanner input = new Scanner(System.in);
+        String title = input.nextLine();
+    }
+//----------------------------------------------------------------------------------------------------------------------
+    public static boolean isTitleValid(){
+        Scanner input = new Scanner(System.in);
+        String title = input.nextLine().toLowerCase();
+
+        String filePath = "inventory.txt"; // the path to the file you want to search in
+        Path path = Paths.get(filePath);
+        List<String> lines = null; // read all lines of the file into a list
+        try {
+            lines = Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (String line : lines) {
+            if ( line.matches(".*" + title + ".*") ) {
+                return true;
+            }
+        }
+        return false;
+    }
+//----------------------------------------------------------------------------------------------------------------------
+    public static void showFaveOrWatched(String userName, int sw){ // 1: fave    2: watch
+        String filePath = "seenFave.txt";
+        BufferedReader reader = null;
+        int index1, index2;
+        String title, state, uName;
+
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+
+            while (line != null) { // read until there is no line
+                index1 = line.indexOf('|');
+                index2 = line.indexOf('|', index1 + 1);
+
+                uName = line.substring(0, index1);
+                title = line.substring(index1 + 1, index2);
+                state = line.substring(index2 + 1);
+
+                switch (sw){
+                    case 1: // favorite
+                        if (uName.equals(userName) && state.equals("favorite")){
+                            System.out.println("\nTitle: " + title);
+                            System.out.println("\n----------------------------------------");
+                        }
+                        break;
+                    case 2: // watch
+                        if (uName.equals(userName) && state.equals("watched")){
+                            System.out.println("\nTitle: " + title);
+                            System.out.println("\n----------------------------------------");
+                        }
+                        break;
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------------
 }
+
+
 
 
