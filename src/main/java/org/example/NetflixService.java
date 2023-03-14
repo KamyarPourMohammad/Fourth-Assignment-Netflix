@@ -10,16 +10,79 @@ import java.nio.file.Paths;
 import java.util.List;
 //
 class NetflixService {
-
-
-
 //----------------------------------------------------------------------------------------------------------------------
-    public void addTVShow(TVShow tvShow){
-        // Implement add tv show logic here
+    public static void addTvShow(){
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Show Name: ");
+        String show = input.nextLine();
+
+        String filePath = "/Users/shayanshahrabi/Documents/University/Semester2/AP/AP-homework/Assignment4/Fourth-Assignment-Netflix/inventory.txt"; // the path to the file you want to search in
+        Path path = Paths.get(filePath);
+        List<String> lines = null; // read all lines of the file into a list
+        try {
+            lines = Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        boolean alreadyExists = false;
+        for (String line : lines) {
+            if (line.matches(".*" + show + ".*")) {
+                alreadyExists = true;
+            }
+        }
+        if(!alreadyExists){
+                System.out.print("Genre: ");
+                String genre = input.nextLine();
+                System.out.print("Year of production: ");
+                String yearOfProd = input.nextLine();
+                try {
+                    FileWriter writer = new FileWriter("inventory.txt", true);
+                    writer.append( show.toLowerCase() + "|" + genre.toLowerCase() + "|" + yearOfProd + "|" + "TvShow" + "\n");
+                    writer.close();
+                    System.out.println("\nShow added successfully.\n");
+                }
+                catch(IOException e){
+                    e.printStackTrace();
+                }
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public void addMovie(Movie movie){
-        // Implement add movie logic here
+    public static void addMovie(){
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Movie Name: ");
+        String movie = input.nextLine();
+
+        String filePath = "/Users/shayanshahrabi/Documents/University/Semester2/AP/AP-homework/Assignment4/Fourth-Assignment-Netflix/inventory.txt"; // the path to the file you want to search in
+        Path path = Paths.get(filePath);
+        List<String> lines = null; // read all lines of the file into a list
+        try {
+            lines = Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        boolean alreadyExists = false;
+        for (String line : lines) {
+            if (line.matches(".*" + movie + ".*")) {
+                alreadyExists = true;
+            }
+        }
+        if(!alreadyExists){
+            System.out.print("Genre: ");
+            String genre = input.nextLine();
+            System.out.print("Year of production: ");
+            String yearOfProd = input.nextLine();
+            try {
+                FileWriter writer = new FileWriter("inventory.txt", true);
+                writer.append( movie.toLowerCase() + "|" + genre.toLowerCase() + "|" + yearOfProd + "|" + "Movie" + "\n");
+                writer.close();
+                System.out.println("\nMovie added successfully.\n");
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 //----------------------------------------------------------------------------------------------------------------------
     public static void logout() {
@@ -76,9 +139,12 @@ class NetflixService {
 //----------------------------------------------------------------------------------------------------------------------
     public static void createFile(){
         String fileName1 = "userPassword.txt";
-        String fileName2 = "userFave";
+        String fileName2 = "seenFave.txt";
+        String fileName3 = "inventory.txt";
+
         File file1 = new File(fileName1);
         File file2 = new File(fileName2);
+        File file3 = new File(fileName3);
 
         try {
             if (file1.createNewFile()){} // if there is no userPassword file --> create one
@@ -86,6 +152,10 @@ class NetflixService {
 
             if (file2.createNewFile()){}
             else {}
+
+            if (file3.createNewFile()){}
+            else {}
+
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -96,31 +166,38 @@ class NetflixService {
         boolean found = false;
         Scanner input = new Scanner(System.in);
 
+        System.out.println("Sign in as admin with user \"Admin\" and password \"12345\"");
         System.out.print("Username: ");
         String username = input.nextLine();
         System.out.print("Password: ");
         String password = input.nextLine();
-// read from file; if there is a name and password : found = true ; else = false.
-        String filePath = "/Users/shayanshahrabi/Documents/University/Semester2/AP/AP-homework/Assignment4/Fourth-Assignment-Netflix/userPassword.txt"; // the path to the file you want to search in
-        Path path = Paths.get(filePath);
-        List<String> lines = null; // read all lines of the file into a list
-        try {
-            lines = Files.readAllLines(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        for (String line : lines) {
-            if ( line.matches(".*" + username + ".*") && (line.matches(".*" + password + ".*")) ) {
-                found = true;
-            }
-        }
 
-        if (found){
-            userMenu();
+        if ( username.equals("Admin") && password.equals("12345")){
+            System.out.println("\nYou Are Now Signed In As Admin.\n");
+            adminMenu();
         }
-        else{
-            System.out.println("\nWrong user or password!\n");
-            login();
+        else {
+            String filePath = "/Users/shayanshahrabi/Documents/University/Semester2/AP/AP-homework/Assignment4/Fourth-Assignment-Netflix/userPassword.txt"; // the path to the file you want to search in
+            Path path = Paths.get(filePath);
+            List<String> lines = null; // read all lines of the file into a list
+            try {
+                lines = Files.readAllLines(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            for (String line : lines) {
+                if (line.matches(".*" + username + ".*") && (line.matches(".*" + password + ".*"))) {
+                    found = true;
+                }
+            }
+
+            if (found && (username != "") && (password != "")) {
+                System.out.println("\nYou have successfully loegged in.\n");
+                userMenu();
+            } else {
+                System.out.println("\nWrong user or password!\n");
+                login();
+            }
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
@@ -128,8 +205,8 @@ class NetflixService {
         Scanner input = new Scanner(System.in);
         int menuItem;
         do {
-            System.out.println("1: TV Shows");
-            System.out.println("2: Movies");
+            System.out.println("1: Search TV Shows");
+            System.out.println("2: Search Movies");
             System.out.println("3: My Favorite Shows");
             System.out.println("0: Log out");
 
@@ -204,6 +281,30 @@ class NetflixService {
         input.nextLine(); // pause and wait for user input
     }
 //----------------------------------------------------------------------------------------------------------------------
+    public static void adminMenu(){
+        Scanner input = new Scanner(System.in);
+
+        while (true){
+            System.out.println("1: Add TV Show");
+            System.out.println("2: Add Movie");
+            System.out.println("0: Log out");
+
+            int menuItem;
+            menuItem = input.nextInt();
+
+            switch (menuItem){
+                case 0:
+                    logout();
+                    break;
+                case 1:
+                    addTvShow();
+                    break;
+                case 2:
+                    addMovie();
+                    break;
+            }
+        }
+    }
 }
 
 
