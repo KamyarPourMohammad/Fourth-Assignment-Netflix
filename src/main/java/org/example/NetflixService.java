@@ -12,7 +12,7 @@ import java.io.FileReader;
 //
 class NetflixService {
 //----------------------------------------------------------------------------------------------------------------------
-    public static void addTvShow(){
+    public  void addTvShow(){
         Scanner input = new Scanner(System.in);
 
         System.out.print("Show Name: ");
@@ -49,7 +49,7 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void addMovie(){
+    public  void addMovie(){
         Scanner input = new Scanner(System.in);
 
         System.out.print("Movie Name: ");
@@ -86,13 +86,13 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void logout() {
+    public void logout() {
         System.out.println("\nYou have logged out of the system\n");
         pause();
         startMenu();
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void  search(int sw) { //1: search on title 2: search on genre 3: search on year
+    public void  search(int sw) { //1: search on title 2: search on genre 3: search on year
         String filePath = "inventory.txt";
         boolean found = false;
         BufferedReader reader = null;
@@ -179,7 +179,7 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void startMenu(){
+    public void startMenu(){
 
         Scanner input = new Scanner(System.in);
 
@@ -210,7 +210,7 @@ class NetflixService {
         }while (true);
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void createFile(){
+    public void createFile(){
         String fileName1 = "userPassword.txt";
         String fileName2 = "watchedFave.txt";
         String fileName3 = "inventory.txt";
@@ -235,7 +235,7 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void login() {
+    public void login() {
         boolean found = false;
         Scanner input = new Scanner(System.in);
 
@@ -275,7 +275,7 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void userMenu(String username){
+    public void userMenu(String username){
         Scanner input = new Scanner(System.in);
         int menuItem;
         do {
@@ -319,7 +319,7 @@ class NetflixService {
         }while(true);
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void signUp(){
+    public void signUp(){
         Scanner input = new Scanner(System.in);
 
         System.out.print("Username (must be less than 30 characters): ");
@@ -368,13 +368,13 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void pause(){
+    public void pause(){
         Scanner input = new Scanner(System.in);
         System.out.println("Press enter to continue ...");
         input.nextLine(); // pause and wait for user input
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void adminMenu(){
+    public void adminMenu(){
         Scanner input = new Scanner(System.in);
 
         while (true){
@@ -399,7 +399,7 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void add2FaveOrWatched(String username, int sw){ //1: fave    2: watch
+    public void add2FaveOrWatched(String username, int sw){ //1: fave    2: watch
         String state = null;
         String filePath =  "watchedFave.txt"; // the path to the file you want to search in
         Scanner input = new Scanner(System.in);
@@ -446,7 +446,7 @@ class NetflixService {
         }
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static boolean isTitleValid(String title){
+    public boolean isTitleValid(String title){
 
         String filePath = "inventory.txt"; // the path to the file you want to search in
         Path path = Paths.get(filePath);
@@ -464,7 +464,7 @@ class NetflixService {
         return false;
     }
 //----------------------------------------------------------------------------------------------------------------------
-    public static void showFaveOrWatched(String userName, int sw){ // 1: fave    2: watch
+    public void showFaveOrWatched(String userName, int sw){ // 1: fave    2: watch
         String filePath = "watchedFave.txt";
         BufferedReader reader = null;
         int index1, index2;
