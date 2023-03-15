@@ -1,4 +1,0 @@
-Shayan|film|favorite
-Shayan|300|watched
-Shayan|film2|favorite
-Hassan|film3|favorite
