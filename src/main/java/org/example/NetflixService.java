@@ -1,6 +1,4 @@
 package org.example;
-import javax.smartcardio.ATR;
-import javax.swing.plaf.PanelUI;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -241,7 +239,8 @@ class NetflixService {
         boolean found = false;
         Scanner input = new Scanner(System.in);
 
-        System.out.println("Sign in as admin with user \"Admin\" and password \"12345\"");
+        System.out.println("\nSign in as admin with user \"Admin\" and password \"12345\"");
+        System.out.println("Sign in as with user \"Shayan\" and password \"123\"\n");
         System.out.print("Username: ");
         String username = input.nextLine();
         System.out.print("Password: ");
@@ -402,6 +401,7 @@ class NetflixService {
 //----------------------------------------------------------------------------------------------------------------------
     public static void add2FaveOrWatched(String username, int sw){ //1: fave    2: watch
         String state = null;
+        String filePath =  "watchedFave.txt"; // the path to the file you want to search in
         Scanner input = new Scanner(System.in);
         System.out.print("Title to add: ");
         String title = input.nextLine();
@@ -412,13 +412,28 @@ class NetflixService {
         else {
             state ="watched";
         }
+
         if(! isTitleValid(title)){ //check if title exists
             System.out.println("Invalid title!");
             pause();
             userMenu(username);
         }
         else {
-            String filePath = "watchedFave.txt"; // the path to the file you want to search in
+            // check if show already exists in file
+            Path path = Paths.get(filePath);
+            List<String> lines = null; // read all lines of the file into a list
+            try {
+                lines = Files.readAllLines(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            for (String line : lines) {
+                if ( line.matches(".*" + title + "|" + state + ".*") ) {
+                    System.out.println("\nShow has been added previously\n");
+                    return;
+                }
+            }
+            // if the show isn't already in the file
             try {
                 FileWriter writer = new FileWriter("watchedFave.txt", true);
                 writer.append( username + "|" + title.toLowerCase() + "|" + state + "\n");
@@ -459,27 +474,29 @@ class NetflixService {
             reader = new BufferedReader(new FileReader(filePath));
             String line = reader.readLine();
 
-            while (line != null) { // read until there is no line
-                index1 = line.indexOf('|');
-                index2 = line.indexOf('|', index1 + 1);
+            while (line != null ) { // read until there is no line
+                if (!line.equals("")) {
+                    index1 = line.indexOf('|');
+                    index2 = line.indexOf('|', index1 + 1);
 
-                uName = line.substring(0, index1);
-                title = line.substring(index1 + 1, index2);
-                state = line.substring(index2 + 1);
+                    uName = line.substring(0, index1);
+                    title = line.substring(index1 + 1, index2);
+                    state = line.substring(index2 + 1);
 
-                switch (sw){
-                    case 1: // favorite
-                        if (uName.equals(userName) && state.equals("favorite")){
-                            System.out.println("\nTitle: " + title);
-                            System.out.println("\n----------------------------------------");
-                        }
-                        break;
-                    case 2: // watch
-                        if (uName.equals(userName) && state.equals("watched")){
-                            System.out.println("\nTitle: " + title);
-                            System.out.println("\n----------------------------------------");
-                        }
-                        break;
+                    switch (sw) {
+                        case 1: // favorite
+                            if (uName.equals(userName) && state.equals("favorite")) {
+                                System.out.println("\nTitle: " + title);
+                                System.out.println("\n----------------------------------------");
+                            }
+                            break;
+                        case 2: // watch
+                            if (uName.equals(userName) && state.equals("watched")) {
+                                System.out.println("\nTitle: " + title);
+                                System.out.println("\n----------------------------------------");
+                            }
+                            break;
+                    }
                 }
                 line = reader.readLine();
             }

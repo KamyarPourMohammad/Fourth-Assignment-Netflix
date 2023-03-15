@@ -1,5 +1,4 @@
-Shayan|300|wathced
-Shayan|300|favorite
-Shayan|200|favorite
-Shayan|film|favorite
 Shayan|300|watched
+Shayan|300|favorite
+Shayan|film|favorite
+Shayan|film|watched
